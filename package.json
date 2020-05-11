@@ -2,11 +2,12 @@
   "name": "comonrapp",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest --verbose",
+    "test-watch": "jest --verbose --watchAll",
     "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon dist/index.js\"",
-    "start": "nodemon server.js"
+    "start": "tsc && node dist/index.js"
   },
   "dependencies": {
     "@types/express": "^4.17.6",
