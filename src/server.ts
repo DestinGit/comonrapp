@@ -2,8 +2,9 @@
 import express from "express";
 import { Request, Response } from "express";
 
-import mongoose from "mongoose";
 import bodyParser from "body-parser";
+import { router } from './routes/router';
+import DBMongoose from "./db/db";
 
 export default class Server {
 
@@ -16,6 +17,8 @@ export default class Server {
     }
 
     start () {
+        DBMongoose.getConnection("mongodb://localhost/db");
+
         const app = express();
         const urlEncodedParser = bodyParser.urlencoded({
             extended: true
@@ -33,9 +36,10 @@ export default class Server {
             next();
         });
 
-        //On définit la route Hello
-        app.get('/hello', (req: Request, res: Response) => res.send('Salut les gens !'));
-
-        app.listen(this.port, () => console.log(`Listening on port ${this.port}`))
+        //Définition du routeur
+        // app.use('/user', router);
+        app.use(router);
+        
+        app.listen(this.port, () => console.log(`Listening on port ${this.port}`));
     }
 }
