@@ -4,7 +4,7 @@ export default class DBMongoose {
 
     static getConnection(url: string) {
         mongoose
-        .connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
+        .connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex:true })
         .then(() => {
             console.log("Connected to mongoDB");
         })

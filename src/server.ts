@@ -3,20 +3,38 @@ import express from "express";
 import { Request, Response } from "express";
 
 import bodyParser from "body-parser";
-import { router } from './routes/router';
+import { router } from './config/routes';
 import DBMongoose from "./db/db";
 
 export default class Server {
 
     readonly port: number;
-    // private _app: any;
+	private srv: any;
 
     constructor (port: number) {
         this.port = port;
-        // this._app = express();
+		this.srv = null;
     }
 
+	private processHandler() {
+		// process.on('SIGTERM', () => {
+		// 	this.srv.close(() => console.log('Close SIGTERM ffffffffff========================='));		
+		// });
+
+		process.on('uncaughtException', (err) => {
+			// console.error(`Caught exception: ${err.message}\n`);
+			this.srv.close();
+			// this.srv.close(() => console.log('Serveur fermé ....'));
+		});
+
+		// process.on('SIGINT', () => {
+		// 	this.srv.close(() => console.log('Close SIGINT========================='));		
+		// });
+	}
+
     start () {
+		console.log('Démarrage du serveur ....');
+		
         DBMongoose.getConnection("mongodb://localhost/db");
 
         const app = express();
@@ -37,9 +55,21 @@ export default class Server {
         });
 
         //Définition du routeur
-        // app.use('/user', router);
         app.use(router);
-        
-        app.listen(this.port, () => console.log(`Listening on port ${this.port}`));
-    }
+		
+		this.srv = app.listen(this.port, () => console.log(`Listening on port ${this.port}`));
+
+		this.processHandler();
+	}
+	
+	close (cb?:Function) {
+		if (this.srv) {
+			this.srv.close(() => {
+				if (cb) {
+					cb();
+				}
+			});
+		}
+	}
+
 }

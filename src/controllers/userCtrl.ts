@@ -1,10 +1,8 @@
-import { Response, Request } from 'express';
+import account from './account/lib';
+// import { router } from '../config/routes';
+import express from 'express';
 
-class UserCtrl {
-    constructor() {}
-    index(req:Request, res:Response) {
-        res.send('BOZI BOZIANA');
-    }
-}
+export const accountRoutes = express.Router();
 
-export const userCr = new UserCtrl();
+accountRoutes.post('/login', account.login);
+accountRoutes.post('/signup', account.signup);
